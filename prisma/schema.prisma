@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER_SELLER
+  USER_CLIENT
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER_CLIENT)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tenants   Tenant[]
+  products  Product[]
+
+  @@map("users")
+}
+
+model Tenant {
+  id              String    @id @default(uuid())
+  name            String    @unique
+  url             String    @unique
+  path            String    @unique
+  firstConnection Boolean
+  user            User      @relation(fields: [userId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  products        Product[]
+
+  @@map("tenants")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  reference   String
+  description String?
+  price       Float
+  category    String
+  images      Image[]
+  user        User     @relation(fields: [userId], references: [id])
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  tenantId    String
+
+  @@map("products")
+}
+
+model Image {
+  id        String  @id @default(uuid())
+  url       String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  @@map("images")
+}
