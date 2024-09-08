@@ -58,6 +58,7 @@ model Product {
   userId      String
   tenantId    String
 
+  @@unique([tenantId])
   @@map("products")
 }
 

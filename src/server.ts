@@ -3,20 +3,48 @@ import { PORT } from "./secrets";
 import { rootRouter } from "./routes";
 import logger from "./logger";
 import prismaPlugin from "./database/prisma";
-import fastifyCompress from "@fastify/compress";
+import compress from "@fastify/compress";
 import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyCaching from "@fastify/caching";
+import fastifyHelmet from "@fastify/helmet";
+import multipart from "@fastify/multipart";
 
 const server = fastify({ logger });
 
-server.register(fastifyCompress);
+// Plugins
+server.register(compress, {
+  global: true,
+  encodings: ["gzip", "deflate"],
+  threshold: 1024,
+});
 server.register(fastifyRateLimit, {
   max: 100,
   timeWindow: "1 minute",
 });
-server.register(fastifyCaching);
+server.register(fastifyCaching, {
+  privacy: "private",
+  expiresIn: 3600,
+});
 server.register(prismaPlugin);
 
+// Gestionnaire d'image et fichier
+server.register(multipart);
+
+// Sécurisation du serveur avec Helmet
+server.register(fastifyHelmet);
+
+// Gestionnaire d'erreurs global
+server.setErrorHandler((error, request, reply) => {
+  server.log.error(error);
+  reply.status(500).send({ error: "Internal Server Error" });
+});
+
+// Gestionnaire de "Route Not Found"
+server.setNotFoundHandler((request, reply) => {
+  reply.status(404).send({ error: "Route Not Found" });
+});
+
+// Routes
 server.register(rootRouter, { prefix: "/api" });
 
 server.listen({ port: Number(PORT), host: "0.0.0.0" }, (err, address) => {

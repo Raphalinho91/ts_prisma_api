@@ -1,11 +1,15 @@
-export interface CreateProductRequest {
+export interface MultipartFile {
+  filename: string;
+  file: NodeJS.ReadableStream;
+}
+
+export interface MultipartFields {
   name: string;
   type: string;
   reference: string;
   description: string | null;
   price: number;
   category: string;
-  images: string[];
   tenantId: string;
 }
 

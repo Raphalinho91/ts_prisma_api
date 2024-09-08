@@ -42,12 +42,9 @@ export class ProductService {
       return product;
     });
   }
-  async findProductByTenantAndReference(tenantId: string, reference: string) {
+  async getProductById(id: string) {
     return this.prisma.product.findFirst({
-      where: {
-        tenantId: tenantId,
-        reference: reference,
-      },
+      where: { id: id },
     });
   }
 }

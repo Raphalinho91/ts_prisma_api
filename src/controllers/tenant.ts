@@ -5,11 +5,7 @@ import { ErrorCode } from "../utils/request/requestError";
 import { handleError } from "../utils/error/error";
 import { ValidCode } from "../utils/reply/replySend";
 import { GoodReplyException } from "../utils/reply/replyGood";
-import {
-  CreateTenantReply,
-  CreateTenantRequest,
-  VerifyIfTenantcanBeUsedRequest,
-} from "../interfaces/tenant";
+import { CreateTenantReply, CreateTenantRequest } from "../interfaces/tenant";
 import { CreateTenantSchema } from "../schemas/tenant";
 
 export const createTenant = async (

@@ -7,7 +7,6 @@ import { UserService } from "../services/auth";
 import { VerifyIfTenantcanBeUsedRequest } from "../interfaces/tenant";
 import { TenantService } from "../services/tenant";
 import { handleError } from "../utils/error/error";
-import logger from "../logger";
 
 interface JwtPayloadWithId extends jwt.JwtPayload {
   id: string;
@@ -46,7 +45,7 @@ export const verifyIfTenantcanBeUsed = async (
       );
     }
     const tenantService = new TenantService(request.server.prisma);
-    const tenant = await tenantService.findTenantByUrl(tenantId);
+    const tenant = await tenantService.findTenantById(tenantId);
 
     if (!tenant) {
       throw new BadRequestsException(
