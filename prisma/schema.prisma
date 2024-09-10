@@ -8,36 +8,39 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
-  USER_SELLER
+  ADMIN_FULL_PRIVILEGE_FOR_ALL_APP
+  USER_SELLER_IS_ADMIN_FOR_HIS_TENANT
   USER_CLIENT
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String   @unique
   password  String
-  role      Role      @default(USER_CLIENT)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  tenants   Tenant[]
-  products  Product[]
+  role      Role     @default(USER_CLIENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant    Tenant?
+  product   Product?
+  tenantId  String?  @unique
+  productId String?  @unique
 
   @@map("users")
 }
 
 model Tenant {
-  id              String    @id @default(uuid())
-  name            String    @unique
-  url             String    @unique
-  path            String    @unique
+  id              String   @id @default(uuid())
+  name            String   @unique
+  url             String   @unique
+  path            String   @unique
   firstConnection Boolean
-  user            User      @relation(fields: [userId], references: [id])
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  userId          String
-  products        Product[]
+  user            User     @relation(fields: [userId], references: [id])
+  product         Product?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  userId          String   @unique
+  productId       String?  @unique
 
   @@map("tenants")
 }
@@ -55,10 +58,9 @@ model Product {
   tenant      Tenant   @relation(fields: [tenantId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  userId      String
-  tenantId    String
+  tenantId    String   @unique
+  userId      String   @unique
 
-  @@unique([tenantId])
   @@map("products")
 }
 

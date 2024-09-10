@@ -14,15 +14,16 @@ export interface MultipartFields {
 }
 
 export interface CreateProductReply {
+  id: string;
   name: string;
   type: string;
   reference: string;
   description: string | null;
   price: number;
   category: string;
-  images: string[];
-  tenantId: string;
   createdAt: Date;
   updatedAt: Date;
+  tenantId: string;
   userId: string;
+  images: string[];
 }

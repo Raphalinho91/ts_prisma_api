@@ -1,6 +1,22 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Product } from "@prisma/client";
 
-export class ProductService {
+export interface IProductService {
+  createProduct(
+    name: string,
+    type: string,
+    reference: string,
+    description: string | null,
+    price: number,
+    category: string,
+    images: string[],
+    userId: string,
+    tenantId: string
+  ): Promise<Product>;
+  getProductById(id: string): Promise<Product | null>;
+  getProductByTenant(tenantId: string): Promise<Product | null>;
+}
+
+export class ProductService implements IProductService {
   private prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
@@ -17,8 +33,8 @@ export class ProductService {
     images: string[],
     userId: string,
     tenantId: string
-  ) {
-    return await this.prisma.$transaction(async (prisma) => {
+  ): Promise<Product> {
+    return this.prisma.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
           name,
@@ -42,9 +58,16 @@ export class ProductService {
       return product;
     });
   }
-  async getProductById(id: string) {
+
+  async getProductById(id: string): Promise<Product | null> {
     return this.prisma.product.findFirst({
-      where: { id: id },
+      where: { id },
+    });
+  }
+
+  async getProductByTenant(tenantId: string): Promise<Product | null> {
+    return this.prisma.product.findFirst({
+      where: { tenantId },
     });
   }
 }

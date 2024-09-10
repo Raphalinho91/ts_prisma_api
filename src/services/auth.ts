@@ -1,31 +1,57 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 
-export class UserService {
+interface IUserService {
+  createUser(email: string, password: string, name: string): Promise<User>;
+  findUserByEmail(email: string): Promise<User | null>;
+  findUserById(id: string): Promise<User | null>;
+  updateUserTenant(id: string, tenantId: string): Promise<User>;
+  updateUserProduct(id: string, productId: string): Promise<User>;
+  updateUserRoleForSeller(id: string): Promise<User>;
+}
+
+export class UserService implements IUserService {
   private prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
 
-  async createUser(email: string, password: string, name: string) {
+  async createUser(
+    email: string,
+    password: string,
+    name: string
+  ): Promise<User> {
     return this.prisma.user.create({
-      data: {
-        email: email,
-        password: password,
-        name: name,
-      },
+      data: { email, password, name },
     });
   }
 
-  async findUserByEmail(email: string) {
-    return this.prisma.user.findFirst({
-      where: { email: email },
+  async findUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findFirst({ where: { email } });
+  }
+
+  async findUserById(id: string): Promise<User | null> {
+    return this.prisma.user.findFirst({ where: { id } });
+  }
+
+  async updateUserTenant(id: string, tenantId: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { tenantId },
     });
   }
 
-  async findUserById(id: string) {
-    return this.prisma.user.findFirst({
-      where: { id: id },
+  async updateUserProduct(id: string, productId: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { productId },
+    });
+  }
+
+  async updateUserRoleForSeller(id: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { role: "USER_SELLER_IS_ADMIN_FOR_HIS_TENANT" },
     });
   }
 }

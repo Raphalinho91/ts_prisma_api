@@ -22,7 +22,7 @@ export const authMiddleware = async (request: FastifyRequest) => {
   try {
     const decodedToken = jwt.verify(token, JWT_SECRET) as JwtPayloadWithId;
     const userService = new UserService(request.server.prisma);
-    const user = await userService.findUserById(decodedToken.id);
+    const user = await userService.findUserById(decodedToken.userId);
     if (!user) {
       throw new BadRequestsException("Unauthorized", ErrorCode.UNAUTHORIZED);
     }

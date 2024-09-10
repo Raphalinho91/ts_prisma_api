@@ -20,4 +20,6 @@ export class HttpExceptionValid {
 export enum ValidCode {
   USER_SIGN_UP = 2001,
   USER_LOG_IN = 2002,
+  PRODUCT_CREATED = 2003,
+  TENANT_CREATED = 2004,
 }
