@@ -14,52 +14,55 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER_CLIENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tenant    Tenant?
-  product   Product?
-  tenantId  String?  @unique
-  productId String?  @unique
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  password     String
+  role         Role           @default(USER_CLIENT)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  tenant       Tenant?
+  product      Product?
+  tenantId     String?        @unique
+  productId    String?        @unique
+  UserCommande UserCommande[]
 
   @@map("users")
 }
 
 model Tenant {
-  id              String   @id @default(uuid())
-  name            String   @unique
-  url             String   @unique
-  path            String   @unique
+  id              String         @id @default(uuid())
+  name            String         @unique
+  url             String         @unique
+  path            String         @unique
   firstConnection Boolean
-  user            User     @relation(fields: [userId], references: [id])
+  user            User           @relation(fields: [userId], references: [id])
   product         Product?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  userId          String   @unique
-  productId       String?  @unique
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  userId          String         @unique
+  productId       String?        @unique
+  UserCommande    UserCommande[]
 
   @@map("tenants")
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  name        String
-  type        String
-  reference   String
-  description String?
-  price       Float
-  category    String
-  images      Image[]
-  user        User     @relation(fields: [userId], references: [id])
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tenantId    String   @unique
-  userId      String   @unique
+  id           String         @id @default(uuid())
+  name         String
+  type         String
+  reference    String
+  description  String?
+  price        Float
+  category     String
+  images       Image[]
+  user         User           @relation(fields: [userId], references: [id])
+  tenant       Tenant         @relation(fields: [tenantId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  tenantId     String         @unique
+  userId       String         @unique
+  UserCommande UserCommande[]
 
   @@map("products")
 }
@@ -71,4 +74,27 @@ model Image {
   productId String
 
   @@map("images")
+}
+
+model UserCommande {
+  id         String   @id @default(uuid())
+  user       User?    @relation(fields: [userId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  userId     String?
+  productId  String
+  tenantId   String
+  email      String
+  name       String
+  address    String
+  country    String
+  city       String
+  zipCode    String
+  totalPrice Int
+  quantity   Int
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("userCommande")
 }

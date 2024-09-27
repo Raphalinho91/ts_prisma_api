@@ -1,4 +1,4 @@
-import { PrismaClient, Product } from "@prisma/client";
+import { Image, PrismaClient, Product } from "@prisma/client";
 
 export interface IProductService {
   createProduct(
@@ -14,6 +14,7 @@ export interface IProductService {
   ): Promise<Product>;
   getProductById(id: string): Promise<Product | null>;
   getProductByTenant(tenantId: string): Promise<Product | null>;
+  getImagesByProductId(productId: string): Promise<Image[] | null>;
 }
 
 export class ProductService implements IProductService {
@@ -69,5 +70,14 @@ export class ProductService implements IProductService {
     return this.prisma.product.findFirst({
       where: { tenantId },
     });
+  }
+
+  async getImagesByProductId(productId: string): Promise<Image[] | null> {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+      include: { images: true },
+    });
+
+    return product ? product.images : null;
   }
 }

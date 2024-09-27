@@ -8,6 +8,7 @@ import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyCaching from "@fastify/caching";
 import fastifyHelmet from "@fastify/helmet";
 import multipart from "@fastify/multipart";
+import fastifyCors from "@fastify/cors";
 
 const server = fastify({ logger });
 
@@ -26,6 +27,9 @@ server.register(fastifyCaching, {
   expiresIn: 3600,
 });
 server.register(prismaPlugin);
+server.register(fastifyCors, {
+  origin: "*",
+});
 
 // Gestionnaire d'image et fichier
 server.register(multipart);
