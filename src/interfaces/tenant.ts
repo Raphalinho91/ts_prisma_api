@@ -1,6 +1,8 @@
 export interface CreateTenantRequest {
   name: string;
   path: string;
+  url: string;
+  iban: string;
 }
 
 export interface CreateTenantReply {
@@ -8,6 +10,7 @@ export interface CreateTenantReply {
   name: string;
   url: string;
   path: string;
+  iban: string;
   firstConnection: Boolean;
   createdAt: Date;
   updatedAt: Date;

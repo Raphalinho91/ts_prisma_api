@@ -3,6 +3,8 @@ import { z } from "zod";
 export const CreateTenantSchema = z.object({
   name: z.string(),
   path: z.string(),
+  url: z.string(),
+  iban: z.string(),
 });
 
 export const VerifyIfTenantcanBeUsedSchema = z.object({

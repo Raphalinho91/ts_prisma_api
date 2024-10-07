@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Tenant, User } from "@prisma/client";
 import "fastify";
 
 declare module "fastify" {

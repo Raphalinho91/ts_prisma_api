@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -14,18 +14,26 @@ enum Role {
 }
 
 model User {
-  id           String         @id @default(uuid())
-  name         String
-  email        String         @unique
-  password     String
-  role         Role           @default(USER_CLIENT)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  tenant       Tenant?
-  product      Product?
-  tenantId     String?        @unique
-  productId    String?        @unique
-  UserCommande UserCommande[]
+  id               String         @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String         @unique
+  password         String
+  country          String?
+  region           String?
+  postalCode       String?
+  city             String?
+  addressOne       String?
+  addressTwo       String?
+  acceptTermsOfUse Boolean
+  role             Role           @default(USER_CLIENT)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  tenant           Tenant?
+  product          Product?
+  tenantId         String?        @unique
+  productId        String?        @unique
+  UserCommande     UserCommande[]
 
   @@map("users")
 }
@@ -35,6 +43,9 @@ model Tenant {
   name            String         @unique
   url             String         @unique
   path            String         @unique
+  iban            String
+  email           String?
+  phoneNumber     String?
   firstConnection Boolean
   user            User           @relation(fields: [userId], references: [id])
   product         Product?
@@ -49,12 +60,11 @@ model Tenant {
 
 model Product {
   id           String         @id @default(uuid())
-  name         String
   type         String
-  reference    String
-  description  String?
-  price        Float
+  name         String
   category     String
+  description  String
+  details      Details[]
   images       Image[]
   user         User           @relation(fields: [userId], references: [id])
   tenant       Tenant         @relation(fields: [tenantId], references: [id])
@@ -74,6 +84,18 @@ model Image {
   productId String
 
   @@map("images")
+}
+
+model Details {
+  id        String  @id @default(uuid())
+  idDetail  Int
+  taille    String
+  quantity  Int
+  price     Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  @@map("details")
 }
 
 model UserCommande {

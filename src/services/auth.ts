@@ -1,7 +1,13 @@
 import { PrismaClient, User } from "@prisma/client";
 
 interface IUserService {
-  createUser(email: string, password: string, name: string): Promise<User>;
+  createUser(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    acceptTermsOfUse: boolean
+  ): Promise<User>;
   findUserByEmail(email: string): Promise<User | null>;
   findUserById(id: string): Promise<User | null>;
   updateUserTenant(id: string, tenantId: string): Promise<User>;
@@ -19,10 +25,12 @@ export class UserService implements IUserService {
   async createUser(
     email: string,
     password: string,
-    name: string
+    firstName: string,
+    lastName: string,
+    acceptTermsOfUse: boolean
   ): Promise<User> {
     return this.prisma.user.create({
-      data: { email, password, name },
+      data: { email, password, firstName, lastName, acceptTermsOfUse },
     });
   }
 

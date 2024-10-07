@@ -5,6 +5,7 @@ export interface ITenantService {
     name: string,
     url: string,
     path: string,
+    iban: string,
     firstConnection: boolean,
     userId: string
   ): Promise<Tenant>;
@@ -34,6 +35,7 @@ export class TenantService implements ITenantService {
     name: string,
     url: string,
     path: string,
+    iban: string,
     firstConnection: boolean,
     userId: string
   ): Promise<Tenant> {
@@ -42,6 +44,7 @@ export class TenantService implements ITenantService {
         name,
         url,
         path,
+        iban,
         firstConnection,
         userId,
       },

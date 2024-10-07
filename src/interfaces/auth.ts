@@ -1,13 +1,17 @@
 export interface SignUpRequest {
   email: string;
   password: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  acceptTermsOfUse: boolean;
 }
 
 export interface SignUpReply {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  acceptTermsOfUse: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,7 +24,8 @@ export interface LogInRequest {
 export interface LogInReply {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   createdAt: Date;
   updatedAt: Date;
   token: string;

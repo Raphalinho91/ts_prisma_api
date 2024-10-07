@@ -1,11 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { authMiddleware } from "../middleware/authorization";
-import { createTenant } from "../controllers/tenant/createTenant";
+import { createShop } from "../controllers/shop/shop";
 
 export const tenantRoutes = async (server: FastifyInstance) => {
-  server.post(
-    "/application",
-    { preHandler: [authMiddleware] },
-    createTenant(server)
-  );
+  server.post("/application", { preHandler: [authMiddleware] }, createShop);
 };

@@ -2,13 +2,13 @@ import fastify from "fastify";
 import { PORT } from "./secrets";
 import { rootRouter } from "./routes";
 import logger from "./logger";
-import prismaPlugin from "./database/prisma";
 import compress from "@fastify/compress";
 import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyCaching from "@fastify/caching";
 import fastifyHelmet from "@fastify/helmet";
 import multipart from "@fastify/multipart";
 import fastifyCors from "@fastify/cors";
+import prismaPlugin from "./database/prisma";
 
 const server = fastify({ logger });
 
