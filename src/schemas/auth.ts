@@ -16,3 +16,17 @@ export const LogInSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
+
+export const InfoUserSchema = z.object({
+  id: z.string().min(1, "L'identifiant est requis"),
+});
+
+export const EditUserLocationSchema = z.object({
+  id: z.string().min(1, "L'identifiant est requis"),
+  country: z.string().optional(),
+  region: z.string().optional(),
+  postalCode: z.string().optional(),
+  city: z.string().optional(),
+  addressOne: z.string().optional(),
+  addressTwo: z.string().optional(),
+});

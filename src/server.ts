@@ -29,6 +29,8 @@ server.register(fastifyCaching, {
 server.register(prismaPlugin);
 server.register(fastifyCors, {
   origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Authorization", "Content-Type"],
 });
 
 // Gestionnaire d'image et fichier

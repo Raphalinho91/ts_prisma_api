@@ -30,3 +30,32 @@ export interface LogInReply {
   updatedAt: Date;
   token: string;
 }
+
+export interface InfoUserReply {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  country: string | null;
+  region: string | null;
+  postalCode: string | null;
+  city: string | null;
+  addressOne: string | null;
+  addressTwo: string | null;
+  acceptTermsOfUse: boolean;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+  tenantId: string | null;
+  productId: string | null;
+}
+
+export interface EditUserLocationRequestAndReply {
+  id: string;
+  country?: string | null;
+  region?: string | null;
+  postalCode?: string | null;
+  city?: string | null;
+  addressOne?: string | null;
+  addressTwo?: string | null;
+}

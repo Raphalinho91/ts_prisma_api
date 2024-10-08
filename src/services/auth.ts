@@ -10,6 +10,15 @@ interface IUserService {
   ): Promise<User>;
   findUserByEmail(email: string): Promise<User | null>;
   findUserById(id: string): Promise<User | null>;
+  updateUserLocation(
+    id: string,
+    country?: string | null,
+    region?: string | null,
+    postalCode?: string | null,
+    city?: string | null,
+    addressOne?: string | null,
+    addressTwo?: string | null
+  ): Promise<User>;
   updateUserTenant(id: string, tenantId: string): Promise<User>;
   updateUserProduct(id: string, productId: string): Promise<User>;
   updateUserRoleForSeller(id: string): Promise<User>;
@@ -40,6 +49,21 @@ export class UserService implements IUserService {
 
   async findUserById(id: string): Promise<User | null> {
     return this.prisma.user.findFirst({ where: { id } });
+  }
+
+  async updateUserLocation(
+    id: string,
+    country?: string | null,
+    region?: string | null,
+    postalCode?: string | null,
+    city?: string | null,
+    addressOne?: string | null,
+    addressTwo?: string | null
+  ): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { country, region, postalCode, city, addressOne, addressTwo },
+    });
   }
 
   async updateUserTenant(id: string, tenantId: string): Promise<User> {

@@ -22,4 +22,6 @@ export enum ValidCode {
   USER_LOG_IN = 2002,
   PRODUCT_CREATED = 2003,
   TENANT_CREATED = 2004,
+  USER_FETCHED = 2005,
+  USER_EDIT = 2006,
 }

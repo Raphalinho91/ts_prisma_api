@@ -1,9 +1,8 @@
-import { hash } from "bcryptjs";
+import { hash } from "argon2";
 import { SignUpRequest, SignUpReply } from "../../interfaces/auth";
 import { BadRequestsException } from "../../utils/request/requestBad";
 import { ErrorCode } from "../../utils/request/requestError";
 import { UserService } from "../../services/auth";
-import logger from "../../logger";
 
 export class SignUpService {
   private userService: UserService;
@@ -13,7 +12,6 @@ export class SignUpService {
   }
 
   async signUp(request: SignUpRequest): Promise<SignUpReply> {
-    logger.fatal({ request });
     const user = await this.userService.findUserByEmail(request.email);
 
     if (user) {
@@ -29,7 +27,7 @@ export class SignUpService {
       );
     }
 
-    const hashedPassword = await hash(request.password, 12);
+    const hashedPassword = await hash(request.password);
     const newUser = await this.userService.createUser(
       request.email,
       hashedPassword,

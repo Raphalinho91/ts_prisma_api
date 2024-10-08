@@ -1,10 +1,10 @@
-import { compare } from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../secrets";
 import { LogInReply } from "../../interfaces/auth";
 import { BadRequestsException } from "../../utils/request/requestBad";
 import { ErrorCode } from "../../utils/request/requestError";
 import { UserService } from "../../services/auth";
+import { verify } from "argon2";
 
 export class LogInService {
   private userService: UserService;
@@ -23,7 +23,7 @@ export class LogInService {
       );
     }
 
-    if (!(await compare(password, user.password))) {
+    if (!(await verify(user.password, password))) {
       throw new BadRequestsException(
         "Incorrect password!",
         ErrorCode.INCORRECT_PASSWORD
