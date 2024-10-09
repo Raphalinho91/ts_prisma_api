@@ -15,17 +15,36 @@ const server = fastify({ logger });
 // Plugins
 server.register(compress, {
   global: true,
-  encodings: ["gzip", "deflate"],
-  threshold: 1024,
+  encodings: ["gzip", "deflate", "br"],
+  threshold: 512,
+  brotliOptions: {
+    params: {
+      [require("zlib").constants.BROTLI_PARAM_QUALITY]: 6,
+    },
+  },
+  zlibOptions: {
+    level: 9,
+  },
 });
+
 server.register(fastifyRateLimit, {
   max: 100,
   timeWindow: "1 minute",
+  hook: "onRequest",
+  allowList: ["127.0.0.1"],
+  addHeaders: {
+    "x-ratelimit-limit": true,
+    "x-ratelimit-remaining": true,
+    "x-ratelimit-reset": true,
+  },
+  keyGenerator: (request) => request.ip,
 });
+
 server.register(fastifyCaching, {
   privacy: "private",
-  expiresIn: 3600,
+  expiresIn: 3600 * 1000,
 });
+
 server.register(prismaPlugin);
 server.register(fastifyCors, {
   origin: "*",
@@ -37,7 +56,18 @@ server.register(fastifyCors, {
 server.register(multipart);
 
 // Sécurisation du serveur avec Helmet
-server.register(fastifyHelmet);
+server.register(fastifyHelmet, {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://trusted-scripts.example.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  referrerPolicy: { policy: "no-referrer" },
+  frameguard: { action: "deny" },
+});
 
 // Gestionnaire d'erreurs global
 server.setErrorHandler((error, request, reply) => {

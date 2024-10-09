@@ -5,12 +5,16 @@ import { BadRequestsException } from "../../utils/request/requestBad";
 import { ErrorCode } from "../../utils/request/requestError";
 import { UserService } from "../../services/auth";
 import { verify } from "argon2";
+import { SessionService } from "../../services/session";
+import logger from "../../logger";
 
 export class LogInService {
   private userService: UserService;
+  private sessionService: SessionService;
 
-  constructor(userService: UserService) {
+  constructor(userService: UserService, sessionService: SessionService) {
     this.userService = userService;
+    this.sessionService = sessionService;
   }
 
   async login(email: string, password: string): Promise<LogInReply> {
@@ -30,10 +34,14 @@ export class LogInService {
       );
     }
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+    await this.sessionService.invalidateOldSession(user.id);
+
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
       algorithm: "HS256",
-      expiresIn: "1h",
+      expiresIn: "2h",
     });
+
+    await this.sessionService.createSession(user.id, token);
 
     return {
       id: user.id,

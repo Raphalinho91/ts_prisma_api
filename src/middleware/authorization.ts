@@ -8,6 +8,7 @@ import { VerifyIfTenantcanBeUsedRequest } from "../interfaces/tenant";
 import { TenantService } from "../services/tenant";
 import { handleError } from "../utils/error/error";
 import logger from "../logger";
+import { SessionService } from "../services/session";
 
 interface JwtPayloadWithId extends jwt.JwtPayload {
   id: string;
@@ -22,11 +23,17 @@ export const authMiddleware = async (request: FastifyRequest) => {
 
   try {
     const decodedToken = jwt.verify(token, JWT_SECRET) as JwtPayloadWithId;
+    const sessionService = new SessionService(request.server.prisma);
+    const session = await sessionService.findSessionByToken(token);
+    if (!session) {
+      throw new BadRequestsException("Invalid token", ErrorCode.INVALID_TOKEN);
+    }
     const userService = new UserService(request.server.prisma);
     const user = await userService.findUserById(decodedToken.userId);
     if (!user) {
       throw new BadRequestsException("Unauthorized", ErrorCode.UNAUTHORIZED);
     }
+
     request.user = user;
   } catch (error) {
     throw new BadRequestsException("Invalid token", ErrorCode.INVALID_TOKEN);

@@ -9,11 +9,9 @@ export interface ITenantService {
     firstConnection: boolean,
     userId: string
   ): Promise<Tenant>;
-  findTenantByNameOrPathOrUrl(
-    name: string,
-    url: string,
-    path: string
-  ): Promise<Tenant | null>;
+  findAllTenant(): Promise<
+    { id: string; url: string; name: string; path: string }[]
+  >;
   findTenantByUrl(url: string): Promise<Tenant | null>;
   findTenantById(id: string): Promise<Tenant | null>;
   findTenantByUserId(userId: string): Promise<Tenant | null>;
@@ -51,13 +49,16 @@ export class TenantService implements ITenantService {
     });
   }
 
-  async findTenantByNameOrPathOrUrl(
-    name: string,
-    url: string,
-    path: string
-  ): Promise<Tenant | null> {
-    return this.prisma.tenant.findFirst({
-      where: { OR: [{ name }, { url }, { path }] },
+  async findAllTenant(): Promise<
+    { id: string; url: string; name: string; path: string }[]
+  > {
+    return this.prisma.tenant.findMany({
+      select: {
+        id: true,
+        url: true,
+        name: true,
+        path: true,
+      },
     });
   }
 

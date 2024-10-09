@@ -2,7 +2,6 @@ import { EditUserLocationRequestAndReply } from "../../interfaces/auth";
 import { BadRequestsException } from "../../utils/request/requestBad";
 import { ErrorCode } from "../../utils/request/requestError";
 import { UserService } from "../../services/auth";
-import logger from "../../logger";
 
 export class EditUserLocationService {
   private userService: UserService;

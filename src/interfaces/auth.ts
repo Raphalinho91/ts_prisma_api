@@ -59,3 +59,17 @@ export interface EditUserLocationRequestAndReply {
   addressOne?: string | null;
   addressTwo?: string | null;
 }
+
+export interface EditUserInfoRequestAndReply {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface EditUserPasswordRequest {
+  id: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

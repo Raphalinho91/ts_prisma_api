@@ -30,3 +30,19 @@ export const EditUserLocationSchema = z.object({
   addressOne: z.string().optional(),
   addressTwo: z.string().optional(),
 });
+
+export const EditUserInfoSchema = z.object({
+  id: z.string().min(1, "L'identifiant est requis"),
+  firstName: z.string().min(1, "Le prénom est requis"),
+  lastName: z.string().min(1, "Le nom est requis"),
+  email: z.string().email("Email invalide"),
+});
+
+export const EditPasswordSchema = z.object({
+  id: z.string().min(1, "L'identifiant est requis"),
+  currentPassword: z.string().min(1, "L'ancien mot de passe est requis"),
+  newPassword: z.string().min(1, "Le nouveau mot de passe  est requis"),
+  confirmPassword: z
+    .string()
+    .min(1, "La confirmation du nouveau mot de passe  est requis"),
+});

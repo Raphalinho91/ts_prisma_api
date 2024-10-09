@@ -1,6 +1,8 @@
 import { FastifyInstance } from "fastify";
 import {
+  editUserInfo,
   editUserLocation,
+  editUserPassword,
   infoUser,
   login,
   signup,
@@ -15,5 +17,11 @@ export const authRoutes = async (server: FastifyInstance) => {
     "/location-user",
     { preHandler: [authMiddleware] },
     editUserLocation
+  );
+  server.put("/info-user", { preHandler: [authMiddleware] }, editUserInfo);
+  server.put(
+    "/password-user",
+    { preHandler: [authMiddleware] },
+    editUserPassword
   );
 };

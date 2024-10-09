@@ -14,18 +14,12 @@ export class CreateTenantService {
   }
 
   async createTenant(
+    userId: string,
     name: string,
     url: string,
     path: string,
-    iban: string,
-    userId: string | null
+    iban: string
   ): Promise<CreateTenantReply> {
-    if (!userId) {
-      throw new BadRequestsException(
-        "User not found !",
-        ErrorCode.USER_NOT_FOUND
-      );
-    }
     const userHasAlreadyTenant = await this.tenantService.findTenantByUserId(
       userId
     );
@@ -36,11 +30,10 @@ export class CreateTenantService {
       );
     }
 
-    const tenantAlreadyUsed =
-      await this.tenantService.findTenantByNameOrPathOrUrl(name, url, path);
+    const tenantAlreadyUsed = await this.tenantService.findTenantByUrl(url);
     if (tenantAlreadyUsed) {
       throw new BadRequestsException(
-        "Name, URL or path already in use !",
+        "URL already in use !",
         ErrorCode.TENANT_ALREADY_EXISTS
       );
     }

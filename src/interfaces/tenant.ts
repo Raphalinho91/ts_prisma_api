@@ -1,4 +1,5 @@
 export interface CreateTenantRequest {
+  userId: string;
   name: string;
   path: string;
   url: string;

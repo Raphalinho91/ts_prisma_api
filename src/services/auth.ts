@@ -19,6 +19,13 @@ interface IUserService {
     addressOne?: string | null,
     addressTwo?: string | null
   ): Promise<User>;
+  updateUserInfo(
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string
+  ): Promise<User>;
+  updateUserPassword(id: string, password: string): Promise<User>;
   updateUserTenant(id: string, tenantId: string): Promise<User>;
   updateUserProduct(id: string, productId: string): Promise<User>;
   updateUserRoleForSeller(id: string): Promise<User>;
@@ -63,6 +70,25 @@ export class UserService implements IUserService {
     return this.prisma.user.update({
       where: { id },
       data: { country, region, postalCode, city, addressOne, addressTwo },
+    });
+  }
+
+  async updateUserInfo(
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string
+  ): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { email, firstName, lastName },
+    });
+  }
+
+  async updateUserPassword(id: string, password: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { password },
     });
   }
 
