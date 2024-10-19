@@ -1,4 +1,3 @@
-import logger from "../../logger";
 import { TenantService } from "../../services/tenant";
 
 export class GetAllTenantService {

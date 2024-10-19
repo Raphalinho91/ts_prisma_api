@@ -16,8 +16,8 @@ export class CreateTenantService {
   async createTenant(
     userId: string,
     name: string,
-    url: string,
     path: string,
+    url: string,
     iban: string
   ): Promise<CreateTenantReply> {
     const userHasAlreadyTenant = await this.tenantService.findTenantByUserId(
@@ -30,7 +30,8 @@ export class CreateTenantService {
       );
     }
 
-    const tenantAlreadyUsed = await this.tenantService.findTenantByUrl(url);
+    const tenantAlreadyUsed =
+      await this.tenantService.findTenantByPathOrNameOrUrl(path, name, url);
     if (tenantAlreadyUsed) {
       throw new BadRequestsException(
         "URL already in use !",
@@ -41,8 +42,8 @@ export class CreateTenantService {
     const firstConnection = false;
     const addTenant = await this.tenantService.createTenant(
       name,
-      url,
       path,
+      url,
       iban,
       firstConnection,
       userId

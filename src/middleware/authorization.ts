@@ -7,8 +7,8 @@ import { UserService } from "../services/auth";
 import { VerifyIfTenantcanBeUsedRequest } from "../interfaces/tenant";
 import { TenantService } from "../services/tenant";
 import { handleError } from "../utils/error/error";
-import logger from "../logger";
 import { SessionService } from "../services/session";
+import { VerifyIfTenantcanBeUsedSchema } from "../schemas/tenant";
 
 interface JwtPayloadWithId extends jwt.JwtPayload {
   id: string;
@@ -45,27 +45,30 @@ export const verifyIfTenantcanBeUsed = async (
   reply: FastifyReply
 ) => {
   try {
-    const { tenantId } = request.query as VerifyIfTenantcanBeUsedRequest;
-    if (tenantId === undefined) {
-      throw new BadRequestsException(
-        "Tenant not found !",
-        ErrorCode.TENANT_NOT_FOUND
-      );
-    }
+    const validatedData = VerifyIfTenantcanBeUsedSchema.parse(
+      request.query as VerifyIfTenantcanBeUsedRequest
+    );
+
     const tenantService = new TenantService(request.server.prisma);
-    const tenant = await tenantService.findTenantById(tenantId);
+    const tenantIdValid = await tenantService.findTenantById(
+      validatedData.tenantId
+    );
+    const tenantUrlValid = await tenantService.findTenantByUrl(
+      validatedData.tenantUrl
+    );
 
-    if (!tenant) {
+    if (!tenantIdValid || !tenantUrlValid) {
       throw new BadRequestsException(
         "Tenant not found !",
         ErrorCode.TENANT_NOT_FOUND
       );
     }
 
-    const userId = request.user?.id;
-
-    if (tenant.firstConnection || (userId && userId === tenant.userId)) {
-      request.tenant = tenant;
+    if (
+      tenantIdValid.firstConnection ||
+      (validatedData.userId && validatedData.userId === tenantIdValid.userId)
+    ) {
+      request.tenant = tenantIdValid;
     } else {
       throw new BadRequestsException(
         "User is not authorized to use the application at this time!",
